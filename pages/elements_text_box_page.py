@@ -23,18 +23,19 @@ class ElementsTextBoxPage(BasePage):
     def open_page(self):
         self.open(self.__URL)
 
-    def fill_form(self):
-        self._type(self.__FULL_NAME, "Antony")
-        self._type(self.__EMAIL, "Antony@gmail.com")
-        self._type(self.__CURRENT_ADDRESS, "Krakow, ul.Lwowska 1")
-        self._type(self.__PERMANENT_ADDRESS, "Warszawa, Lenina 5a")
+    def fill_form(self, full_name: str, email: str, current_address: str, permanent_address: str):
+        self._type(self.__FULL_NAME, full_name)
+        self._type(self.__EMAIL, email)
+        self._type(self.__CURRENT_ADDRESS, current_address)
+        self._type(self.__PERMANENT_ADDRESS, permanent_address)
 
     def submit_form(self):
         self._scroll_to_element(self._find(self.__SUBMIT_BUTTON))
         self._click(self.__SUBMIT_BUTTON)
 
     def filed_data(self):
-        actual_full_name = self._get_text(self.__FILLED_FULL_NAME)
-        actual_email = self._get_text(self.__FILLED_EMAIL)
-        actual_current_address = self._get_text(self.__CURRENT_ADDRESS)
-        actual_permanent_address = self._get_text(self.__PERMANENT_ADDRESS)
+        actual_full_name = self._get_text(self.__FILLED_FULL_NAME).split(":")[1]
+        actual_email = self._get_text(self.__FILLED_EMAIL).split(":")[1]
+        actual_current_address = self._get_text(self.__FILLED_CURRENT_ADDRESS).split(":")[1]
+        actual_permanent_address = self._get_text(self.__FILLED_PERMANENT_ADDRESS).split(":")[1]
+        return actual_full_name, actual_email, actual_current_address, actual_permanent_address

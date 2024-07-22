@@ -16,25 +16,25 @@ class BasePage:
         with allure.step("Open url"):
             self.driver.get(url)
 
-    def _wait_until_element_is_visible(self, locator: tuple, timeout: int = 3) -> WebElement:
+    def _wait_until_element_is_visible(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.visibility_of_element_located(locator))
+        wait.until(ec.visibility_of_element_located(locator))
 
-    def _wait_until_elements_are_visible(self, locator: tuple, timeout: int = 3) -> list[WebElement]:
+    def _wait_until_elements_are_visible(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.visibility_of_all_elements_located(locator))
+        wait.until(ec.visibility_of_all_elements_located(locator))
 
-    def _wait_until_element_is_present(self, locator: tuple, timeout: int = 3) -> WebElement:
+    def _wait_until_element_is_present(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.presence_of_element_located(locator))
+        wait.until(ec.presence_of_element_located(locator))
 
-    def _wait_until_elements_are_present(self, locator: tuple, timeout: int = 3) -> list[WebElement]:
+    def _wait_until_elements_are_present(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.presence_of_all_elements_located(locator))
+        wait.until(ec.presence_of_all_elements_located(locator))
 
-    def _wait_until_element_is_clickable(self, locator: tuple, timeout: int = 3) -> WebElement:
+    def _wait_until_element_is_clickable(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.element_to_be_clickable(locator))
+        wait.until(ec.element_to_be_clickable(locator))
 
     def _scroll_to_element(self, element):
         with allure.step("Scroll to the element"):
@@ -57,7 +57,7 @@ class BasePage:
     def _get_text(self, locator: tuple) -> str:
         return self._find(locator).text
 
-    def _get_current_url(self, locator: tuple) -> str:
+    def _get_current_url(self) -> str:
         return self.driver.current_url
 
     def _make_screenshot(self, screenshot_name):
