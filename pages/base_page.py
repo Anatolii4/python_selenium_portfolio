@@ -12,7 +12,7 @@ class BasePage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def open(self, url: str):
+    def _open(self, url: str):
         with allure.step("Open url"):
             self.driver.get(url)
 
@@ -44,6 +44,11 @@ class BasePage:
         with allure.step("Find element"):
             self._wait_until_element_is_visible(locator)
             return self.driver.find_element(*locator)
+
+    def _find_elements(self, locator: tuple) -> list[WebElement]:
+        with allure.step("Find element"):
+            self._wait_until_elements_are_visible(locator)
+            return self.driver.find_elements(*locator)
 
     def _click(self, locator: tuple):
         with allure.step("Click the element"):

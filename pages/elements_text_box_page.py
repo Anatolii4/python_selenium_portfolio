@@ -21,7 +21,7 @@ class ElementsTextBoxPage(BasePage):
         super().__init__(driver)
 
     def open_page(self):
-        self.open(self.__URL)
+        self._open(self.__URL)
 
     def fill_form(self, full_name: str, email: str, current_address: str, permanent_address: str):
         self._type(self.__FULL_NAME, full_name)
