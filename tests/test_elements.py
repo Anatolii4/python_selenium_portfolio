@@ -1,15 +1,13 @@
 import time
-
+from data.data_generator.general_generator import *
 import allure
 
+from pages.elements_buttons_page import ElementsButtonsPage
 from pages.elements_checkbox_page import ElementsCheckBoxPage
+from pages.elements_radio_button_page import ElementsRadioButtonPage
 from pages.elements_text_box_page import ElementsTextBoxPage
-from data.data_generator.general_generator import (
-    generate_random_full_name,
-    generate_random_email,
-    generate_random_current_address,
-    generate_random_permanent_address,
-)
+
+from pages.elements_web_table_page import ElementsWebTablePage
 
 
 class TestElements:
@@ -52,7 +50,103 @@ class TestElements:
         with allure.step("Check random checkbox"):
             checkbox_page.expand_full_list()
             checkbox_page.click_random_num_checkboxes()
-            #time.sleep(5)
             clicked_boxes = checkbox_page.get_titles_of_checked_boxes()
             output_result = checkbox_page.get_output_result()
             assert clicked_boxes == output_result, "The output does not match clicked checkboxes"
+
+    @allure.id(3)
+    @allure.title("Checking radio buttons")
+    def test_radio_button_form(self, driver):
+        radio_button = ElementsRadioButtonPage(driver)
+        with allure.step("Open text box page"):
+            radio_button.open_page()
+
+        with allure.step("Click random button"):
+            clicked_button = radio_button.click_random_radio_button()
+
+            with allure.step("Check that clicked button reflected in the output section"):
+                output_result = radio_button.get_output_result()
+            assert clicked_button == output_result, "Clicked button does not reflected in output section"
+
+    @allure.id(4)
+    @allure.title("Adding new person into the table")
+    def test_web_table_add_person(self, driver):
+        web_table = ElementsWebTablePage(driver)
+        with allure.step("Open web table page"):
+            web_table.open_page()
+
+        with allure.step("Add new person into the table"):
+            person_first_name = generate_random_first_name()
+            person_last_name = generate_random_last_name()
+            person_email = generate_random_email()
+            person_age = generate_random_age()
+            person_salary = generate_random_salary()
+            person_department = generate_random_department()
+            generated_person = web_table.add_person(person_first_name, person_last_name, person_email, person_age,
+                                                    person_salary, person_department)
+            web_table.submit_changes()
+        with allure.step("Try to search a newly added person"):
+            web_table.search_created_person(person_first_name)
+
+            with allure.step("Verify the data reflected in the table"):
+                output_result = web_table.verify_created_person()
+                assert generated_person == output_result, "added person is not reflected in the table"
+
+    @allure.id(5)
+    @allure.title("Delete a person from a table")
+    def test_web_table_delete_person(self, driver):
+        web_table = ElementsWebTablePage(driver)
+        with allure.step("Open web table page"):
+            web_table.open_page()
+
+        with allure.step("Add new person into the table"):
+            person_first_name = generate_random_first_name()
+            person_last_name = generate_random_last_name()
+            person_email = generate_random_email()
+            person_age = generate_random_age()
+            person_salary = generate_random_salary()
+            person_department = generate_random_department()
+            web_table.add_person(person_first_name, person_last_name, person_email, person_age,
+                                 person_salary, person_department)
+            web_table.submit_changes()
+
+            with allure.step("Try to search a newly added person"):
+                web_table.search_created_person(person_first_name)
+
+            with allure.step("Delete a created person"):
+                web_table.delete_person()
+
+                with allure.step("Verify deleted person"):
+                    assert web_table.is_person_deleted(), "Person is not deleted"
+
+    @allure.id(6)
+    @allure.title("Edit person's information")
+    def test_edit_person(self, create_person, driver):
+        web_table = ElementsWebTablePage(driver)
+
+        with allure.step("Edit existing person"):
+            person_first_name = generate_random_first_name()
+            person_last_name = generate_random_last_name()
+            person_email = generate_random_email()
+            person_age = generate_random_age()
+            person_salary = generate_random_salary()
+            person_department = generate_random_department()
+            edited_person = web_table.edit_person_info(person_first_name, person_last_name, person_email, person_age,
+                                   person_salary, person_department)
+            web_table.submit_changes()
+        with allure.step("Try to search an edited person"):
+            web_table.search_created_person(person_first_name)
+
+            with allure.step("Verify the data reflected in the table"):
+                output_result = web_table.verify_created_person()
+                assert edited_person == output_result, "edited person is not reflected in the table"
+
+
+    @allure.id(7)
+    @allure.title("Edit person's information")
+    def test_button_page(self, driver):
+        buttons_page = ElementsButtonsPage(driver)
+        buttons_page.open_page()
+        buttons_page.click_on_different_way("double")
+        buttons_page.click_on_different_way("right")
+        buttons_page.click_on_different_way("click")

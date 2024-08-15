@@ -1,5 +1,7 @@
 from typing import List
 
+from selenium.common import TimeoutException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -36,6 +38,14 @@ class BasePage:
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.element_to_be_clickable(locator))
 
+    def _wait_until_element_is_not_presented(self, locator: tuple, timeout: int = 3):
+        wait = WebDriverWait(self.driver, timeout)
+        try:
+            wait.until(ec.presence_of_element_located(locator))
+            return False
+        except TimeoutException:
+            return True
+
     def _scroll_to_element(self, element):
         with allure.step("Scroll to the element"):
             self.driver.execute_script("return arguments[0].scrollIntoView();", element)
@@ -68,3 +78,18 @@ class BasePage:
     def _make_screenshot(self, screenshot_name):
         allure.attach(body=self.driver.get_screenshot_as_png(), name=screenshot_name,
                       attachment_type=AttachmentType.PNG)
+
+    def _clear_and_type(self, locator: tuple, text: str):
+        self._find(locator).clear()
+        self._find(locator).send_keys(text)
+
+    def _double_click(self, element: WebElement):
+        action = ActionChains(self.driver)
+        action.double_click(element)
+        action.perform()
+
+    def _right_click(self, element: WebElement):
+        action = ActionChains(self.driver)
+        action.context_click(element)
+        action.perform()
+
