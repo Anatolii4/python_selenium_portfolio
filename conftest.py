@@ -1,6 +1,6 @@
 import pytest
 from selenium import webdriver
-
+from selenium.webdriver.chrome.options import Options
 from data.data_generator.general_generator import generate_random_first_name, generate_random_last_name, \
     generate_random_email, generate_random_age, generate_random_salary, generate_random_department
 from pages.elements_web_table_page import ElementsWebTablePage
@@ -11,7 +11,9 @@ def driver(request):
     browser = request.config.getoption("--browser")
     print(f"Opening {browser} driver")
     if browser == "chrome":
-        my_driver = webdriver.Chrome()
+        options = Options()
+        options.add_argument("--headless")
+        my_driver = webdriver.Chrome(options=options)
     elif browser == "firefox":
         my_driver = webdriver.Firefox()
     else:
