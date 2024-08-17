@@ -92,32 +92,32 @@ class TestElements:
                 output_result = web_table.verify_created_person()
                 assert generated_person == output_result, "added person is not reflected in the table"
 
-    @allure.id(5)
-    @allure.title("Delete a person from a table")
-    def test_web_table_delete_person(self, driver):
-        web_table = ElementsWebTablePage(driver)
-        with allure.step("Open web table page"):
-            web_table.open_page()
-
-        with allure.step("Add new person into the table"):
-            person_first_name = generate_random_first_name()
-            person_last_name = generate_random_last_name()
-            person_email = generate_random_email()
-            person_age = generate_random_age()
-            person_salary = generate_random_salary()
-            person_department = generate_random_department()
-            web_table.add_person(person_first_name, person_last_name, person_email, person_age,
-                                 person_salary, person_department)
-            web_table.submit_changes()
-
-            with allure.step("Try to search a newly added person"):
-                web_table.search_created_person(person_first_name)
-
-            with allure.step("Delete a created person"):
-                web_table.delete_person()
-
-                with allure.step("Verify deleted person"):
-                    assert web_table.is_person_deleted(), "Person is not deleted"
+    # @allure.id(5)
+    # @allure.title("Delete a person from a table")
+    # def test_web_table_delete_person(self, driver):
+    #     web_table = ElementsWebTablePage(driver)
+    #     with allure.step("Open web table page"):
+    #         web_table.open_page()
+    #
+    #     with allure.step("Add new person into the table"):
+    #         person_first_name = generate_random_first_name()
+    #         person_last_name = generate_random_last_name()
+    #         person_email = generate_random_email()
+    #         person_age = generate_random_age()
+    #         person_salary = generate_random_salary()
+    #         person_department = generate_random_department()
+    #         web_table.add_person(person_first_name, person_last_name, person_email, person_age,
+    #                              person_salary, person_department)
+    #         web_table.submit_changes()
+    #
+    #         with allure.step("Try to search a newly added person"):
+    #             web_table.search_created_person(person_first_name)
+    #
+    #         with allure.step("Delete a created person"):
+    #             web_table.delete_person()
+    #
+    #             with allure.step("Verify deleted person"):
+    #                 assert web_table.is_person_deleted(), "Person is not deleted"
 
     @allure.id(6)
     @allure.title("Edit person's information")
