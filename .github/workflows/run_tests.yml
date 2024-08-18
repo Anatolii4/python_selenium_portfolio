@@ -20,33 +20,42 @@ jobs:
     steps:
       - name: Checkout autotests
         uses: actions/checkout@v4
+
       - name: set up Python environment
         uses: actions/setup-python@v4
         with: 
           python-version: "3.12"
+
       - name: install dependencies
         run: pip install -r requirements.txt
-      - name: run regression tests
-        if: "github.event.inputs.deployment_target=='regression'"
-        run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
-      - name: run smoke tests
-        if: "github.event.inputs.deployment_target=='smoke'"
-        run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
-      - name: run all tests
-        if: "github.event.inputs.deployment_target=='all'"
-        run: pytest -v --alluredir=allure-results tests/test_elements.py
+
       - name: Install Java
         uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
+
       - name: Install Allure
-        run: 
+        run: |
           sudo apt-add-repository ppa:qameta/allure
           sudo apt-get update
           sudo apt-get install allure
+
+      - name: run regression tests
+        if: "github.event.inputs.deployment_target=='regression'"
+        run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
+
+      - name: run smoke tests
+        if: "github.event.inputs.deployment_target=='smoke'"
+        run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
+
+      - name: run all tests
+        if: "github.event.inputs.deployment_target=='all'"
+        run: pytest -v --alluredir=allure-results tests/test_elements.py
+
       - name: Generate test report
-        run: allure generate -c allure-results -o allure-report
+        run: allure generate allure-results -o allure-report
+
       - name: Upload Allure Report as artifact
         uses: actions/upload-artifact@v3
         with:
