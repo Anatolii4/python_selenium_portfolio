@@ -1,4 +1,7 @@
 import time
+
+import pytest
+
 from data.data_generator.general_generator import *
 import allure
 
@@ -13,6 +16,8 @@ from pages.elements_web_table_page import ElementsWebTablePage
 class TestElements:
     @allure.id(1)
     @allure.title("Test some fields")
+    @pytest.mark.smoke
+    @pytest.mark.regression
     def test_text_box_form(self, driver):
         """
         Submit the form
@@ -42,6 +47,7 @@ class TestElements:
 
     @allure.id(2)
     @allure.title("Checking some check boxes")
+    @pytest.mark.smoke
     def test_checkbox_form(self, driver):
         checkbox_page = ElementsCheckBoxPage(driver)
         with allure.step("Open text box page"):
@@ -56,6 +62,7 @@ class TestElements:
 
     @allure.id(3)
     @allure.title("Checking radio buttons")
+    @pytest.mark.smoke
     def test_radio_button_form(self, driver):
         radio_button = ElementsRadioButtonPage(driver)
         with allure.step("Open text box page"):
@@ -70,6 +77,8 @@ class TestElements:
 
     @allure.id(4)
     @allure.title("Adding new person into the table")
+    @pytest.mark.smoke
+    @pytest.mark.regression
     def test_web_table_add_person(self, driver):
         web_table = ElementsWebTablePage(driver)
         with allure.step("Open web table page"):
@@ -92,35 +101,37 @@ class TestElements:
                 output_result = web_table.verify_created_person()
                 assert generated_person == output_result, "added person is not reflected in the table"
 
-    # @allure.id(5)
-    # @allure.title("Delete a person from a table")
-    # def test_web_table_delete_person(self, driver):
-    #     web_table = ElementsWebTablePage(driver)
-    #     with allure.step("Open web table page"):
-    #         web_table.open_page()
-    #
-    #     with allure.step("Add new person into the table"):
-    #         person_first_name = generate_random_first_name()
-    #         person_last_name = generate_random_last_name()
-    #         person_email = generate_random_email()
-    #         person_age = generate_random_age()
-    #         person_salary = generate_random_salary()
-    #         person_department = generate_random_department()
-    #         web_table.add_person(person_first_name, person_last_name, person_email, person_age,
-    #                              person_salary, person_department)
-    #         web_table.submit_changes()
-    #
-    #         with allure.step("Try to search a newly added person"):
-    #             web_table.search_created_person(person_first_name)
-    #
-    #         with allure.step("Delete a created person"):
-    #             web_table.delete_person()
-    #
-    #             with allure.step("Verify deleted person"):
-    #                 assert web_table.is_person_deleted(), "Person is not deleted"
+    @allure.id(5)
+    @allure.title("Delete a person from a table")
+    @pytest.mark.smoke
+    def test_web_table_delete_person(self, driver):
+        web_table = ElementsWebTablePage(driver)
+        with allure.step("Open web table page"):
+            web_table.open_page()
+
+        with allure.step("Add new person into the table"):
+            person_first_name = generate_random_first_name()
+            person_last_name = generate_random_last_name()
+            person_email = generate_random_email()
+            person_age = generate_random_age()
+            person_salary = generate_random_salary()
+            person_department = generate_random_department()
+            web_table.add_person(person_first_name, person_last_name, person_email, person_age,
+                                 person_salary, person_department)
+            web_table.submit_changes()
+
+            with allure.step("Try to search a newly added person"):
+                web_table.search_created_person(person_first_name)
+
+            with allure.step("Delete a created person"):
+                web_table.delete_person()
+
+                with allure.step("Verify deleted person"):
+                    assert web_table.is_person_deleted(), "Person is not deleted"
 
     @allure.id(6)
     @allure.title("Edit person's information")
+    @pytest.mark.smoke
     def test_edit_person(self, create_person, driver):
         web_table = ElementsWebTablePage(driver)
 
@@ -144,6 +155,7 @@ class TestElements:
 
     @allure.id(7)
     @allure.title("Edit person's information")
+    @pytest.mark.smoke
     def test_button_page(self, driver):
         buttons_page = ElementsButtonsPage(driver)
         buttons_page.open_page()
