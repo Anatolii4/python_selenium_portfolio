@@ -1,1 +1,19 @@
+name: Python auto tests
 
+on: [push]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Run autotests
+    steps:
+      - name: Checkout autotests
+        uses: actions/checkout@v4
+      - name: set up Python environment
+        uses: actions/setup-python@v4
+        with: 
+          python-version: "3.12"
+      - name: install dependencies
+        run: pip install -r requirements.txt
+      - name: run tests
+        run: pytest -v tests/test_elements.py
