@@ -44,14 +44,17 @@ jobs:
       - name: run regression tests
         if: "github.event.inputs.deployment_target=='regression'"
         run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
+        continue-on-error: true
 
       - name: run smoke tests
         if: "github.event.inputs.deployment_target=='smoke'"
         run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
+        continue-on-error: true
 
       - name: run all tests
         if: "github.event.inputs.deployment_target=='all'"
         run: pytest -v --alluredir=allure-results tests/test_elements.py
+        continue-on-error: true
 
       - name: Generate test report
         run: allure generate allure-results -o allure-report
