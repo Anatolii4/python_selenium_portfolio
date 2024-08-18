@@ -57,11 +57,28 @@ jobs:
         continue-on-error: true
 
       - name: Generate test report
-        run: allure generate allure-results -o allure-report
+        run: allure generate allure-results -o _site 
 
       - name: Upload Allure Report as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: allure-report
-          path: allure-report
+          name: _site
+          path: _site
           retention-days: 1
+  publish-report:
+    name: Report publication
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: allure-report
+
+      - name: Upload pages artifacts
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
