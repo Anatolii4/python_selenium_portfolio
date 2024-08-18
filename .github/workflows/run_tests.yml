@@ -21,12 +21,12 @@ jobs:
       - name: Checkout autotests
         uses: actions/checkout@v4
 
-      - name: set up Python environment
+      - name: Set up Python environment
         uses: actions/setup-python@v4
         with: 
           python-version: "3.12"
 
-      - name: install dependencies
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Install Java
@@ -41,23 +41,26 @@ jobs:
           unzip allure-2.30.0.zip -d /opt/
           sudo ln -s /opt/allure-2.30.0/bin/allure /usr/local/bin/allure
 
-      - name: run regression tests
+      - name: Run regression tests
         if: "github.event.inputs.deployment_target == 'regression'"
         run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
-      - name: run smoke tests
+      - name: Run smoke tests
         if: "github.event.inputs.deployment_target == 'smoke'"
         run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
-      - name: run all tests
+      - name: Run all tests
         if: "github.event.inputs.deployment_target == 'all'"
         run: pytest -v --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
       - name: Generate test report
-        run: allure generate allure-results -o _site 
+        run: allure generate allure-results -o _site
+
+      - name: List files in the working directory
+        run: ls -la
 
       - name: Upload Allure Report as artifact
         uses: actions/upload-artifact@v3
@@ -65,6 +68,7 @@ jobs:
           name: _site
           path: _site
           retention-days: 1
+
   publish-report:
     name: Report publication
     runs-on: ubuntu-latest
@@ -74,6 +78,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: _site
+
+      - name: List files in the working directory after download
+        run: ls -la
 
       - name: Upload pages artifacts
         uses: actions/upload-pages-artifact@v2
