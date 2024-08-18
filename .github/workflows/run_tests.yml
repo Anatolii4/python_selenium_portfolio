@@ -39,20 +39,20 @@ jobs:
         run: |
           wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.30.0.zip
           unzip allure-2.30.0.zip -d /opt/
-          export PATH=$PATH:/opt/allure-2.30.0/bin
+          sudo ln -s /opt/allure-2.30.0/bin/allure /usr/local/bin/allure
 
       - name: run regression tests
-        if: "github.event.inputs.deployment_target=='regression'"
+        if: "github.event.inputs.deployment_target == 'regression'"
         run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
       - name: run smoke tests
-        if: "github.event.inputs.deployment_target=='smoke'"
+        if: "github.event.inputs.deployment_target == 'smoke'"
         run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
       - name: run all tests
-        if: "github.event.inputs.deployment_target=='all'"
+        if: "github.event.inputs.deployment_target == 'all'"
         run: pytest -v --alluredir=allure-results tests/test_elements.py
         continue-on-error: true
 
