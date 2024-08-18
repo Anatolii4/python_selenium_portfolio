@@ -26,5 +26,12 @@ jobs:
           python-version: "3.12"
       - name: install dependencies
         run: pip install -r requirements.txt
-      - name: run tests
+      - name: run regression tests
+        if: "github.event.inputs.deployment_target=='regression'"
+        run: pytest -v -m regression tests/test_elements.py
+      - name: run smoke tests
+        if: "github.event.inputs.deployment_target=='smoke'"
+        run: pytest -v -m smoke tests/test_elements.py
+      - name: run all tests
+        if: "github.event.inputs.deployment_target=='all'"
         run: pytest -v tests/test_elements.py
