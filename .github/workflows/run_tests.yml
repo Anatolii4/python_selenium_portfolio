@@ -28,10 +28,28 @@ jobs:
         run: pip install -r requirements.txt
       - name: run regression tests
         if: "github.event.inputs.deployment_target=='regression'"
-        run: pytest -v -m regression tests/test_elements.py
+        run: pytest -v -m regression --alluredir=allure-results tests/test_elements.py
       - name: run smoke tests
         if: "github.event.inputs.deployment_target=='smoke'"
-        run: pytest -v -m smoke tests/test_elements.py
+        run: pytest -v -m smoke --alluredir=allure-results tests/test_elements.py
       - name: run all tests
         if: "github.event.inputs.deployment_target=='all'"
-        run: pytest -v tests/test_elements.py
+        run: pytest -v --alluredir=allure-results tests/test_elements.py
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - name: Install Allure
+        run: 
+          sudo apt-add-repository ppa:qameta/allure
+          sudo apt-get update
+          sudo apt-get install allure
+      - name: Generate test report
+        run: allure generate -c allure-results -o allure-report
+      - name: Upload Allure Report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 1
