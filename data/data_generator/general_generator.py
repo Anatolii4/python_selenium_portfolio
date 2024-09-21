@@ -60,3 +60,11 @@ def generate_random_permanent_address() -> str:
 
 def choose_random_num_checkboxes():
     return randint(1, 9)
+
+
+def generate_file():
+    path = rf"C:\Users\48788\PycharmProjects\python_selenium_portfolio\generated_file\{random.randint(0,999)}.txt"
+    file = open(path, 'w+')
+    file.write(f"{generate_random_permanent_address()}")
+    file.close()
+    return path
