@@ -1,3 +1,4 @@
+import time
 from typing import List
 
 from selenium.common import TimeoutException
@@ -18,7 +19,7 @@ class BasePage:
         with allure.step("Open url"):
             self.driver.get(url)
 
-    def _wait_until_element_is_visible(self, locator: tuple, timeout: int = 3):
+    def _wait_until_element_is_visible(self, locator: tuple, timeout: int = 5):
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.visibility_of_element_located(locator))
 
@@ -26,15 +27,14 @@ class BasePage:
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.visibility_of_all_elements_located(locator))
 
-    def _wait_until_element_is_present(self, locator: tuple, timeout: int = 3):
+    def _wait_until_element_is_present(self, locator: tuple, timeout: int = 5):
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.presence_of_element_located(locator))
 
     def _wait_until_elements_are_present(self, locator: tuple, timeout: int = 3):
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.presence_of_all_elements_located(locator))
-
-    def _wait_until_element_is_clickable(self, locator: tuple, timeout: int = 3):
+    def _wait_until_element_is_clickable(self, locator: tuple, timeout: int =5):
         wait = WebDriverWait(self.driver, timeout)
         wait.until(ec.element_to_be_clickable(locator))
 
@@ -45,6 +45,11 @@ class BasePage:
             return False
         except TimeoutException:
             return True
+
+    def _wait_until_text_is_presented(self, locator: tuple, text: str, timeout: int = 3 ):
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(ec.text_to_be_present_in_element(locator, text))
+
 
     def _scroll_to_element(self, element):
         with allure.step("Scroll to the element"):
@@ -97,3 +102,59 @@ class BasePage:
         list_of_tabs = self.driver.window_handles
         self.driver.switch_to.window(list_of_tabs[-1])
 
+    def _switch_to_allert(self, timeout: int = 10):
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(ec.alert_is_present())
+        alert_window = self.driver.switch_to.alert
+        return alert_window.text
+
+    def _confirm_alert(self, timeout: int = 10):
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(ec.alert_is_present())
+        alert_window = self.driver.switch_to.alert
+        alert_text = alert_window.text
+        alert_window.accept()
+        return alert_text
+
+    def _prompt_alert(self, text: str, timeout: int = 10):
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(ec.alert_is_present())
+        alert_window = self.driver.switch_to.alert
+        alert_window.send_keys(text)
+        alert_txt = alert_window.text
+        alert_window.accept()
+        return alert_txt
+
+    def _switch_to_frame(self, frame: WebElement):
+        self.driver.switch_to.frame(frame)
+
+    def _switch_to_default_content(self):
+        self.driver.switch_to.default_content()
+
+    def _drag_and_drop_by_offset(self, element:WebElement, x_cords, y_cords):
+        action = ActionChains(self.driver)
+        action.drag_and_drop_by_offset(element, x_cords, y_cords)
+        action.perform()
+
+    def _hover_and_get_text(self, hover_element: tuple, wait_element: tuple, tool_tip_text: tuple):
+        element = self._find(hover_element)
+        self._scroll_to_element(element)
+        action = ActionChains(self.driver)
+        action.move_to_element(element).perform()
+        self._wait_until_element_is_visible(wait_element)
+        tool_tip_text = self._find(tool_tip_text).text
+        return tool_tip_text
+
+    def _move_to_element(self, element):
+        action = ActionChains(self.driver)
+        action.move_to_element(element).perform()
+
+    def _wait_until_menu_are_present(self, locator: tuple, timeout: int = 3):
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(ec.presence_of_all_elements_located(locator))
+        return self.driver.find_elements(*locator)
+
+    def _drag_drop_to_element(self, what, where):
+        action = ActionChains(self.driver)
+        action.drag_and_drop(what, where)
+        action.perform()

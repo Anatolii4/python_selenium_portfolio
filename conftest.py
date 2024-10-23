@@ -11,8 +11,10 @@ def driver(request):
     browser = request.config.getoption("--browser")
     print(f"Opening {browser} driver")
     if browser == "chrome":
+        adblock_path = r'C:\Users\48788\PycharmProjects\python_selenium_portfolio\GIGHMMPIOBKLFEPJOCNAMGKKBIGLIDOM_6_9_3_0.crx'
         options = Options()
         # options.add_argument("--headless")
+        # options.add_extension(adblock_path)
         my_driver = webdriver.Chrome(options=options)
     elif browser == "firefox":
         my_driver = webdriver.Firefox()
