@@ -21,7 +21,7 @@ class TestAlertsFrame:
         assert actual_text == "This is a sample page", 'The text of new tab is incorrect'
 
     @allure.id(2)
-    @allure.title("Check opening browser window")
+    @allure.title("Check opening some browser's windows")
     @pytest.mark.smoke
     def test_browser_new_window(self, driver):
         browser_window = AlertsFramePage(driver)
